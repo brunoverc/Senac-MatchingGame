@@ -1,3 +1,5 @@
+using System.Configuration;
+
 namespace MatchingGame
 {
     public partial class Form1 : Form
@@ -7,6 +9,7 @@ namespace MatchingGame
 
         Label firstClicked = null;
         Label secondClicked = null;
+        decimal seconds = 0;
 
         int points = 0;
 
@@ -17,24 +20,33 @@ namespace MatchingGame
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            icons.Add("!");
-            icons.Add("!");
-            icons.Add("N");
-            icons.Add("N");
-            icons.Add(",");
-            icons.Add(",");
-            icons.Add("k");
-            icons.Add("k");
-            icons.Add("b");
-            icons.Add("b");
-            icons.Add("v");
-            icons.Add("v");
-            icons.Add("w");
-            icons.Add("w");
-            icons.Add("z");
-            icons.Add("z");
+            FillList();
 
             AssignIconsToSquares();
+
+            //Inicializando meu timer
+            timer1.Enabled = true;
+            timer1.Start();
+        }
+
+        private void FillList()
+        {
+            icons.Add("!");
+            icons.Add("!");
+            icons.Add("N");
+            icons.Add("N");
+            icons.Add(",");
+            icons.Add(",");
+            icons.Add("k");
+            icons.Add("k");
+            icons.Add("b");
+            icons.Add("b");
+            icons.Add("v");
+            icons.Add("v");
+            icons.Add("w");
+            icons.Add("w");
+            icons.Add("z");
+            icons.Add("z");
         }
 
         public void AssignIconsToSquares()
@@ -88,6 +100,33 @@ namespace MatchingGame
                     if (firstClicked.Text == secondClicked.Text)
                     {
                         points++;
+
+                        if(points == 8)
+                        {
+                            MessageBox.Show("Parabéns, seu tempo foi: " + (seconds / 60).ToString("0.00") + " minutos");
+                            
+                            var response = MessageBox.Show("Deseja começar outro jogo?", "Iniciar outro jogo?",
+                                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                            if(response == DialogResult.Yes)
+                            {
+                                FillList();
+
+                                AssignIconsToSquares();
+
+                                timer1.Stop();
+                                timer1.Enabled = false;
+
+                                timer1.Enabled = true;
+                                timer1.Start();
+                            }
+                            else
+                            {
+                                this.Close();
+                            }
+                            
+                            
+                        }
                     }
                 }
             }
@@ -166,6 +205,11 @@ namespace MatchingGame
         private void label16_Click(object sender, EventArgs e)
         {
             ChangeForeColor(sender);
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            seconds++;
         }
     }
 }
